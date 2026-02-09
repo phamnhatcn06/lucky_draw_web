@@ -699,10 +699,25 @@ async function spin() {
             body: JSON.stringify({})
         });
 
+        // Reset trạng thái
+        $('#winner-popup').hide();
+        $('#fireworks-container').hide();
+        $('.confetti-container').remove(); // Xóa confetti cũ
+
+        // Play rolling sound
+        audioRolling.currentTime = 0;
+        audioRolling.play().catch(e => console.log('Audio autoplay blocked:', e));
+
         // Đợi API trả về để biết duration
         const res = await apiPromise;
 
         if (!res.ok) {
+            if (spinCancelController) spinCancelController.abort();
+
+            // Stop audio
+            audioRolling.pause();
+            audioWin.pause();
+
             // Lỗi -> dừng luôn
             stopDice3D();
             diceIdleSmall();
@@ -754,7 +769,11 @@ async function spin() {
         // Để đúng ý "mỗi giải thời gian khác nhau", ta sẽ sleep theo duration của giải đó.
         await sleep(spinDuration);
 
-        // 3) dừng + thu nhỏ + ẩn
+        // --- KẾT THÚC QUAY (Success) ---
+        audioRolling.pause();
+        audioWin.currentTime = 0;
+        audioWin.play().catch(e => console.log('Audio autoplay blocked:', e));
+
         stopDice3D();
         document.getElementById('specialMsg').classList.add('hidden'); // Hide message
         if (specialMsgTimeout) clearTimeout(specialMsgTimeout); // Clear timeout just in case
