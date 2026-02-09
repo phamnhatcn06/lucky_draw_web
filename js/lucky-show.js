@@ -810,7 +810,21 @@ async function confirmWinner() {
     await refreshPrizeAndStatus();
 }
 
-function cancelWinner() {
+async function cancelWinner() {
+    // Confirm before cancelling the current winner popup
+    const result = await Swal.fire({
+        title: 'Bạn có chắc chắn muốn huỷ?',
+        text: "Kết quả này sẽ không được ghi nhận!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Đúng, huỷ nó!',
+        cancelButtonText: 'Không, giữ lại'
+    });
+
+    if (!result.isConfirmed) return;
+
     stopPetals(); // Stop falling stars
     stopMegaConfetti(); // Ensure special confetti stops
     if (fw) fw.stopContinuous(); // Stop fireworks
@@ -931,7 +945,18 @@ async function handleRemoveWinnerClick(id, prizeId, name, li) {
         return;
     }
 
-    if (!confirm('Bạn có chắc muốn huỷ kết quả của: ' + name + '?')) return;
+    const result = await Swal.fire({
+        title: 'Xoá người trúng giải?',
+        text: `Bạn có chắc muốn huỷ kết quả của: ${name}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Xoá ngay',
+        cancelButtonText: 'Thôi'
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
         const res = await fetchJSON(API.cancel, {
@@ -944,14 +969,20 @@ async function handleRemoveWinnerClick(id, prizeId, name, li) {
 
         if (res.ok) {
             li.remove();
-            li.remove();
             // Refetch status to update counter and "Next" button state
             await refreshPrizeAndStatus();
+
+            // Show success alert
+            Swal.fire(
+                'Đã xoá!',
+                'Người trúng giải đã bị xoá khỏi danh sách.',
+                'success'
+            );
         } else {
-            alert('Lỗi: ' + (res.msg || 'Không thể xoá'));
+            Swal.fire('Lỗi', res.msg || 'Không thể xoá', 'error');
         }
     } catch (e) {
-        alert('Lỗi hệ thống khi xoá');
+        Swal.fire('Lỗi', 'Lỗi hệ thống khi xoá', 'error');
         console.error(e);
     }
 }
