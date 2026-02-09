@@ -1030,14 +1030,19 @@ body {
 /* cánh gà */
 .winners-side {
     position: fixed;
-    top: 34%;
-    transform: translateY(-50%);
+    top: 12vh;
+    bottom: 15vh;
+    /* Leave space for bottom controls */
+    height: auto;
+    transform: none;
     width: 17vw;
     max-width: 320px;
     min-width: 180px;
     z-index: 4;
     pointer-events: none;
-    /* không ảnh hưởng thao tác */
+    /* Container passes clicks */
+    display: flex;
+    flex-direction: column;
 }
 
 /* trái – phải */
@@ -1066,8 +1071,30 @@ body {
     display: flex;
     flex-direction: column;
     flex-direction: column;
-    gap: 6px;
     /* Tighter list spacing */
+    overflow-y: auto;
+    flex: 1;
+    pointer-events: auto;
+    /* Enable scroll interaction */
+    padding-right: 4px;
+
+    /* Hide scrollbar for cleaner look but allow scroll */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
+}
+
+/* Custom scrollbar */
+.winners-side ul::-webkit-scrollbar {
+    width: 4px;
+}
+
+.winners-side ul::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.winners-side ul::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 215, 0, 0.3);
+    border-radius: 4px;
 }
 
 /* item - styled as individual glass cards */
