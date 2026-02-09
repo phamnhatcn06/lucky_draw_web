@@ -823,11 +823,22 @@ function cancelWinner() {
 // SPACE = spin
 document.addEventListener('keydown', function (e) {
     const isSpace = (e.code === 'Space' || e.keyCode === 32);
-    if (!isSpace) return;
+    const isEnter = (e.code === 'Enter' || e.keyCode === 13);
 
     // Check if popup is open
     const popup = document.getElementById('winnerPopup');
-    if (popup && !popup.classList.contains('hidden')) {
+    const isPopupVisible = popup && !popup.classList.contains('hidden');
+
+    // Enter confirms winner if popup is open
+    if (isEnter && isPopupVisible) {
+        e.preventDefault();
+        confirmWinner();
+        return;
+    }
+
+    if (!isSpace) return;
+
+    if (isPopupVisible) {
         e.preventDefault();
         return;
     }
