@@ -1042,8 +1042,8 @@ body {
     top: auto;
     bottom: 50%;
     /* Start from middle... */
-    max-height: 20vh;
-    /* ...grow to 20vh, leaving ~30vh (30%) at top */
+    max-height: 35vh;
+    /* ...grow to 35vh, leaving ~15vh (15%) at top */
     height: auto;
     transform: none;
     width: 17vw;
