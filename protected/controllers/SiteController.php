@@ -2,6 +2,8 @@
 
 class SiteController extends Controller
 {
+    public $defaultAction = 'show';
+
     public function actionIndex()
     {
         $this->render('index');

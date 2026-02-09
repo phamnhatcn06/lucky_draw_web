@@ -83,7 +83,6 @@
                         </span>
                         <span class="partInfo">
                             <span class="partname"><?= CHtml::encode($w['full_name']) ?></span>
-                            <br />
                             <span class="job"><?= CHtml::encode($w['department']) ?></span>
                         </span>
                         <button class="btn-delete" data-id="<?= $w['id'] ?>" data-prize="<?= $w['prize_id'] ?>"
@@ -106,7 +105,6 @@
                         </span>
                         <span class="partInfo">
                             <span class="partname"><?= CHtml::encode($w['full_name']) ?></span>
-                            <br />
                             <span class="job"><?= CHtml::encode($w['department']) ?></span>
                         </span>
                         <button class="btn-delete" data-id="<?= $w['id'] ?>" data-prize="<?= $w['prize_id'] ?>"
@@ -154,10 +152,11 @@
             confirm: "<?php echo $baseUrl; ?>/api/confirmWinner",
             cancel: "<?php echo $baseUrl; ?>/api/cancelWinner",
             nextPrize: "<?php echo $baseUrl; ?>/api/nextPrize",
+            checkAuth: "<?php echo $baseUrl; ?>/api/checkAuth",
         };
     </script>
     <script src="<?php echo $baseUrl; ?>/js/fireworks-modern.js"></script>
-    <script src="<?php echo $baseUrl; ?>/js/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?php echo $baseUrl; ?>/js/lucky-show.js"></script>
 </body>
 

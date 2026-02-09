@@ -7,7 +7,7 @@ class ApiController extends Controller
         return array();
     }
 
-    private $ACCESS_CODE = '6868'; // Mã bảo mật truy cập
+    private $ACCESS_CODE = 'YEP6868'; // Mã bảo mật truy cập
 
     public function actionCheckAuth()
     {
