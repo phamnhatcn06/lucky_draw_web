@@ -823,10 +823,19 @@ function cancelWinner() {
 // SPACE = spin
 document.addEventListener('keydown', function (e) {
     const isSpace = (e.code === 'Space' || e.keyCode === 32);
+    if (!isSpace) return;
+
+    // Check if popup is open
+    const popup = document.getElementById('winnerPopup');
+    if (popup && !popup.classList.contains('hidden')) {
+        e.preventDefault();
+        return;
+    }
+
     if (prizeLocked) {
         return;
     }
-    if (!isSpace) return;
+
     e.preventDefault();
     spin();
 });
