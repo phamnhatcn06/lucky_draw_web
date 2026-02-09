@@ -401,6 +401,11 @@ async function refreshPrizeAndStatus() {
                 prizeNameEl.textContent = p.data.prize_name;
                 document.getElementById('btnNextPrize').classList.remove('active');
             }
+            // Update counter
+            const counter = document.getElementById('prizeCounter');
+            if (counter) {
+                counter.textContent = `${p.data.awarded} / ${p.data.quantity}`;
+            }
         }
         if (p.ok && !p.data) prizeNameEl.textContent = 'ĐÃ QUAY XONG';
         const s = await fetchJSON(API.status);

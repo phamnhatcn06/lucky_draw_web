@@ -1242,11 +1242,36 @@ span.partInfo .job {
     }
 }
 
-.next-price {
+/* Next Button Container */
+.next-area {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Space between counter and button */
+}
+
+/* Prize Counter */
+.prize-counter {
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+}
+
+.next-price {
+    /* Position fixed handled by parent .next-area */
+    position: relative;
+    bottom: auto;
+    right: auto;
     padding: 10px 20px;
     background: #ff5b5b;
     color: white;

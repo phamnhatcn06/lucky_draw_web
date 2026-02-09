@@ -142,7 +142,10 @@
         Nhấn <b>SPACE</b> để quay
         <span id="remaining" class="pill">—</span>
     </div>
-    <button id="btnNextPrize" class="btn-next next-price">➡ Tiếp</button>
+    <div class="next-area">
+        <div id="prizeCounter" class="prize-counter">0 / 0</div>
+        <button id="btnNextPrize" class="btn-next next-price">➡ Tiếp</button>
+    </div>
     <script>
         window.__API = {
             spin: "<?php echo $baseUrl; ?>/api/spin",
