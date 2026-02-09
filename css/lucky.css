@@ -84,13 +84,17 @@ body {
 }
 
 .prize {
-    margin-top: 2.2vh;
+    margin-top: 2vh;
     font-weight: 900;
     letter-spacing: .08em;
     color: var(--gold);
-    font-size: clamp(26px, 3.2vw, 56px);
+    /* Smaller, responsive font size. Use vmin to fit both wide/tall screens */
+    font-size: clamp(18px, 4vmin, 40px);
     text-shadow: 0 12px 45px rgba(0, 0, 0, .55);
     text-transform: uppercase;
+    max-width: 90vw;
+    /* Prevent overflow on narrow screens */
+    line-height: 1.2;
 }
 
 /*.dice-wrap{*/
@@ -101,7 +105,12 @@ body {
 .board {
     /* Provide a white plate background */
     position: relative;
-    padding: 2.5vh 3vw;
+    padding: 1.5vh 2vw;
+    /* Tighter padding */
+    max-width: 95vw;
+    max-height: 70vh;
+    /* Ensure it fits on short screens */
+    box-sizing: border-box;
     /* Tighter padding to shrink the plate */
     /* Space around dice */
     border-radius: 50%;
