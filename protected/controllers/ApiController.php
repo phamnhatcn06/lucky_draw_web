@@ -27,6 +27,11 @@ class ApiController extends Controller
 
     private function json($arr, $code = 200)
     {
+        // Clean any previous output (warnings, notices)
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
         header('Content-Type: application/json; charset=utf-8');
         http_response_code($code);
         echo CJSON::encode($arr);
@@ -52,7 +57,6 @@ class ApiController extends Controller
         LEFT JOIN (
             SELECT prize_id, COUNT(*) c
             FROM winners
-            where confirm = 1
             GROUP BY prize_id
         ) w ON w.prize_id = p.id
         WHERE p.id = :id
@@ -187,6 +191,16 @@ class ApiController extends Controller
             $extraWhere = "";
             $queryParams = [];
 
+            // Check exclude toggle (Active)
+            $excludeActive = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_active'")->queryScalar();
+            if ($excludeActive == 1) {
+                $kw = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_keyword'")->queryScalar();
+                if (!$kw)
+                    $kw = 'Nhà thầu';
+                $extraWhere .= " AND (p.department NOT LIKE :kw AND p.company NOT LIKE :kw AND p.full_name NOT LIKE :kw)";
+                $queryParams[':kw'] = '%' . $kw . '%';
+            }
+
             // Check exclude partners setting
             $excludePartners = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_partners'")->queryScalar();
             if ($excludePartners == 1) {
@@ -230,9 +244,12 @@ class ApiController extends Controller
                 )
             ));
         } catch (Exception $e) {
+            $logMsg = date('Y-m-d H:i:s') . " - Active: $excludeActive, Partners: $excludePartners, SQL: " . ($extraWhere ?? 'N/A') . "\nError: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n";
+            file_put_contents('spin_error.log', $logMsg, FILE_APPEND);
+
             if ($tx->active)
                 $tx->rollback();
-            $this->json(array('ok' => false, 'error' => 'Spin failed'), 500);
+            $this->json(array('ok' => false, 'error' => 'System Error: ' . $e->getMessage()), 500);
         }
     }
 }

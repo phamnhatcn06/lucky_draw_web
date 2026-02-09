@@ -10,6 +10,11 @@ const fullNameEl = document.getElementById('fullName');
 const departmentEl = document.getElementById('department');
 const companyEl = document.getElementById('company');
 
+// Audio
+const audioRolling = new Audio('audio/rolling.mp3');
+audioRolling.loop = true;
+const audioWin = new Audio('audio/win.mp3');
+
 let isSpinning = false;
 // ===== 3D DICE SETUP =====
 const diceWrap = document.getElementById('diceWrap');
@@ -159,7 +164,7 @@ function diceHidden() {
 function diceIdleSmall() {
     if (!diceWrap) return;
     diceWrap.classList.remove('hidden', 'isSpinning');
-    boardWrap.classList.remove('hidden', 'isSpinning');
+    boardWrap.classList.remove('hidden', 'isSpinning'); // Already removing?
     diceWrap.classList.add('isIdle');
 }
 
@@ -167,6 +172,7 @@ function diceSpinningBig() {
     if (!diceWrap) return;
     diceWrap.classList.remove('hidden', 'isIdle');
     diceWrap.classList.add('isSpinning');
+    boardWrap.classList.add('isSpinning'); // Add this line
 }
 
 // ---------- helpers ----------
@@ -800,7 +806,8 @@ async function spin() {
 
     } catch (e) {
         diceHidden();
-        alert('Lỗi hệ thống');
+        alert('Lỗi hệ thống: ' + (e.message || e));
+        console.error(e);
     } finally {
         isSpinning = false;
     }

@@ -1,11 +1,11 @@
 <?php
-// check_schema.php
-$columns = Yii::app()->db->schema->getTable('prizes')->columnNames;
-print_r($columns);
-if (!in_array('duration', $columns)) {
-    echo "Adding duration column...\n";
-    Yii::app()->db->createCommand("ALTER TABLE prizes ADD COLUMN duration INT DEFAULT 3000")->execute();
-    echo "Added duration column.\n";
-} else {
-    echo "Column duration already exists.\n";
+try {
+    $pdo = new PDO('mysql:host=127.0.0.1;dbname=lucky_draw', 'root', '123456a@');
+    $stmt = $pdo->query("DESCRIBE participants");
+    $cols = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($cols as $c) {
+        echo $c['Field'] . " - " . $c['Type'] . "\n";
+    }
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
 }

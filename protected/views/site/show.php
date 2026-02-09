@@ -23,9 +23,9 @@
     <div id="lightSweep" class="light-sweep"></div>
     <div class="screen">
         <div class="spin-area">
-            <div id="prizeName" class="prize">—</div>
             <div id="specialMsg" class="special-msg hidden">Ai sẽ là người may mắn nhất hôm nay......</div>
             <div class="board hidden" id="board">
+                <div id="prizeName" class="prize">—</div>
                 <div class="dice-wrap">
                     <!-- scale wrapper: nhỏ lúc chờ, to khi quay -->
                     <div id="diceWrap" class="diceWrap hidden isIdle">
@@ -155,6 +155,7 @@
             checkAuth: "<?php echo $baseUrl; ?>/api/checkAuth",
         };
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="<?php echo $baseUrl; ?>/js/fireworks-modern.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?php echo $baseUrl; ?>/js/lucky-show.js"></script>

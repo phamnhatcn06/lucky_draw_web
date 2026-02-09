@@ -84,17 +84,30 @@ body {
 }
 
 .prize {
-    margin-top: 2vh;
+    /* Position inside board */
+    position: absolute;
+    top: 15%;
+    /* Slighty above center */
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+
     font-weight: 900;
     letter-spacing: .08em;
     color: var(--gold);
-    /* Smaller, responsive font size. Use vmin to fit both wide/tall screens */
-    font-size: clamp(18px, 4vmin, 40px);
+    /* Make it larger as requested */
+    font-size: clamp(24px, 5vmin, 55px);
     text-shadow: 0 12px 45px rgba(0, 0, 0, .55);
     text-transform: uppercase;
-    max-width: 90vw;
-    /* Prevent overflow on narrow screens */
     line-height: 1.2;
+    pointer-events: none;
+    transition: top 0.3s ease;
+}
+
+/* Shift prize up slightly when board is spinning to avoid overlapping dice */
+.board.isSpinning .prize {
+    top: 10%;
 }
 
 /*.dice-wrap{*/
