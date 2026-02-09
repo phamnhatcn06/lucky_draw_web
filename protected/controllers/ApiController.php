@@ -15,7 +15,10 @@ class ApiController extends Controller
         $data = CJSON::decode($input);
         $code = isset($data['code']) ? $data['code'] : '';
 
-        if ($code === $this->ACCESS_CODE) {
+        $dbCode = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='access_code'")->queryScalar();
+        $validCode = ($dbCode !== false) ? $dbCode : $this->ACCESS_CODE;
+
+        if ($code === $validCode) {
             $this->json(['ok' => true]);
         } else {
             $this->json(['ok' => false, 'msg' => 'Mã truy cập không đúng!']);
