@@ -182,15 +182,28 @@ class ApiController extends Controller
             }
 
             // 2) Lock + random người chưa trúng
+            $extraWhere = "";
+            $queryParams = [];
+
+            // Check exclude setting
+            $excludeActive = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_active'")->queryScalar();
+            if ($excludeActive == 1) {
+                $kw = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_keyword'")->queryScalar();
+                if (!$kw)
+                    $kw = 'Nhà thầu';
+                $extraWhere = " AND (p.department NOT LIKE :kw AND p.company NOT LIKE :kw AND p.full_name NOT LIKE :kw)";
+                $queryParams[':kw'] = '%' . $kw . '%';
+            }
+
             $winner = Yii::app()->db->createCommand("
         SELECT p.id, p.code, p.full_name, p.department, p.company
         FROM participants p
         LEFT JOIN winners w ON w.participant_id = p.id
-        WHERE p.is_active=1 AND w.participant_id IS NULL
+        WHERE p.is_active=1 AND w.participant_id IS NULL $extraWhere
         ORDER BY RAND()
         LIMIT 1
         FOR UPDATE
-      ")->queryRow();
+      ")->queryRow(true, $queryParams);
 
             if (!$winner) {
                 $tx->rollback();

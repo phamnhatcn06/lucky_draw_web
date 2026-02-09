@@ -424,6 +424,21 @@ $eventTitle = isset($settings['event_title']) ? $settings['event_title'] : 'Luck
             <div class="card" style="max-width: 600px;">
                 <form method="post" action="<?php echo $this->createUrl('admin/settings'); ?>">
                     <div class="form-group">
+                        <label class="form-label">Giải thưởng đang quay (Current Prize)</label>
+                        <select class="form-control" name="settings[current_prize_id]">
+                            <option value="">-- Chọn giải đang quay --</option>
+                            <?php 
+                            $currentPrizeId = isset($settings['current_prize_id']) ? $settings['current_prize_id'] : '';
+                            foreach ($prizes as $p): 
+                            ?>
+                                <option value="<?php echo $p->id; ?>" <?php if($p->id == $currentPrizeId) echo 'selected'; ?>>
+                                    <?php echo CHtml::encode($p->prize_name); ?> (SL: <?php echo $p->quantity; ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label">Tên chương trình (Event Title)</label>
                         <input type="text" class="form-control" name="settings[event_title]"
                             value="<?php echo CHtml::encode($eventTitle); ?>" placeholder="Ví dụ: Tiệc Tất Niên 2026">
@@ -445,6 +460,18 @@ $eventTitle = isset($settings['event_title']) ? $settings['event_title'] : 'Luck
                                     echo 'checked'; ?>>
                                 Cho phép trúng nhiều lần (Cài đặt trong file config)
                             </label>
+                        </div>
+                        
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.3); margin-top: 15px;">
+                             <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;font-weight:bold;color:#fca5a5">
+                                 <input type="hidden" name="settings[exclude_active]" value="0">
+                                 <input type="checkbox" name="settings[exclude_active]" value="1" <?php if(!empty($settings['exclude_active'])) echo 'checked'; ?>> 
+                                 LOẠI BỎ THEO TỪ KHÓA (Ví dụ: "Nhà thầu")
+                             </label>
+                             <input type="text" class="form-control" name="settings[exclude_keyword]" 
+                                    value="<?php echo CHtml::encode(isset($settings['exclude_keyword']) ? $settings['exclude_keyword'] : 'Nhà thầu'); ?>" 
+                                    placeholder="Từ khóa cần lọc (VD: Nhà thầu)">
+                             <small style="opacity:0.7;display:block;margin-top:5px">Những người có Tên/Phòng ban/Công ty chứa từ khóa này sẽ bị loại khỏi vòng quay.</small>
                         </div>
                     </div>
 

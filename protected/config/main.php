@@ -52,7 +52,7 @@ return [
         'allow_multi_win' => false, // false = CHỈ TRÚNG 1 LẦN
 
         // Admin login (demo). Khuyến nghị đổi ngay.
-        'adminUser' => 'admin',
-        'adminPass' => '123456',
+        'adminUser' => 'admin_vptd',
+        'adminPass' => 'vptd15102012',
     ],
 ];
