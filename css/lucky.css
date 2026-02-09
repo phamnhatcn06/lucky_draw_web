@@ -101,7 +101,8 @@ body {
 .board {
     /* Provide a white plate background */
     position: relative;
-    padding: 6vh 4vw;
+    padding: 2.5vh 3vw;
+    /* Tighter padding to shrink the plate */
     /* Space around dice */
     border-radius: 50%;
     /* Oval/Circle */
