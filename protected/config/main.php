@@ -21,7 +21,7 @@ return [
             'urlFormat' => 'path',
             'showScriptName' => false,
             'rules' => [
-                '' => 'site/index',
+                '' => 'site/show',
 
                 'api/prizes' => 'api/prizes',
                 'api/status' => 'api/status',

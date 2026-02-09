@@ -30,29 +30,6 @@ class ApiController extends Controller
         Yii::app()->end();
     }
 
-    // Giải hiện tại (giải chưa quay đủ)
-//    public function actionPrize()
-//    {
-//        $row = Yii::app()->db->createCommand("
-//        SELECT
-//            p.id,
-//            p.prize_name,
-//            p.prize_order,
-//            p.quantity,
-//            IFNULL(w.c,0) AS awarded,
-//            (IFNULL(w.c,0) >= p.quantity) AS is_finished
-//        FROM prizes p
-//        LEFT JOIN (
-//            SELECT prize_id, COUNT(*) c
-//            FROM winners
-//            GROUP BY prize_id
-//        ) w ON w.prize_id = p.id
-//        ORDER BY p.prize_order ASC
-//        LIMIT 1
-//    ")->queryRow();
-//
-//        $this->json(array('ok' => true, 'data' => $row ? $row : null));
-//    }
     public function actionPrize()
     {
         $currentPrizeId = Yii::app()->db->createCommand("

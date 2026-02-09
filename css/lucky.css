@@ -1274,7 +1274,7 @@ span.partInfo .job {
     font-size: 18px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     background: rgba(0, 0, 0, 0.4);
-    padding: 8px 12px;
+    padding: 0px 12px;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(4px);
@@ -1285,7 +1285,7 @@ span.partInfo .job {
     position: relative;
     bottom: auto;
     right: auto;
-    padding: 10px 20px;
+    padding: 0px 20px;
     background: #ff5b5b;
     color: white;
     border: none;
@@ -1463,4 +1463,21 @@ span.partInfo .job {
 
 .winner-center .btn-delete:hover {
     transform: translateY(-50%) scale(1.1);
+}
+
+/* Smaller Next Button & Counter */
+.next-area {
+    gap: 15px;
+}
+
+.prize-counter {
+    font-size: 18px !important;
+    padding: 5px 16px !important;
+    min-width: 80px;
+}
+
+.next-price {
+    font-size: 16px !important;
+    padding: 5px 20px !important;
+    min-width: 120px !important;
 }
