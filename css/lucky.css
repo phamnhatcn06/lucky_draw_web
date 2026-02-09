@@ -1039,11 +1039,11 @@ body {
 /* cánh gà */
 .winners-side {
     position: fixed;
-    top: auto;
-    bottom: 50%;
-    /* Start from middle... */
-    max-height: 35vh;
-    /* ...grow to 35vh, leaving ~15vh (15%) at top */
+    top: 25%;
+    /* Start from 40% down */
+    bottom: 5vh;
+    /* Extend to near bottom */
+    max-height: none;
     height: auto;
     transform: none;
     width: 17vw;
@@ -1081,8 +1081,8 @@ body {
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column-reverse;
-    /* Stack upwards from bottom */
+    flex-direction: column;
+    /* Stack downwards (normal) */
     /* Tighter list spacing */
     gap: 6px;
     overflow-y: auto;
