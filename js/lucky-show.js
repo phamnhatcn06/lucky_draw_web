@@ -398,6 +398,7 @@ async function refreshPrizeAndStatus() {
                 prizeNameEl.textContent = 'ĐÃ QUAY XONG GIẢI';
                 document.getElementById('btnNextPrize').classList.add('active');
             } else {
+                prizeLocked = false; // Unlock if spots opened up
                 prizeNameEl.textContent = p.data.prize_name;
                 document.getElementById('btnNextPrize').classList.remove('active');
             }
@@ -923,7 +924,9 @@ async function handleRemoveWinnerClick(id, prizeId, name, li) {
 
         if (res.ok) {
             li.remove();
-            updateWinnerSides();
+            li.remove();
+            // Refetch status to update counter and "Next" button state
+            await refreshPrizeAndStatus();
         } else {
             alert('Lỗi: ' + (res.msg || 'Không thể xoá'));
         }
