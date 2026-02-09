@@ -1303,7 +1303,8 @@ span.partInfo .job {
 #specialMsg {
     position: fixed !important;
     top: auto !important;
-    bottom: 5vh !important;
+    bottom: 1vh !important;
+    /* Lowered significantly */
     left: 50%;
     transform: translateX(-50%);
     font-size: clamp(20px, 2.5vw, 32px);
