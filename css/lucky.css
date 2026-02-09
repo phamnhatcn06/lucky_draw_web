@@ -1299,10 +1299,11 @@ span.partInfo .job {
 }
 
 /* Special Message Styling */
-.special-msg {
-    position: fixed;
-    bottom: 5vh;
-    /* Lower */
+/* Special Message Styling */
+#specialMsg {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 5vh !important;
     left: 50%;
     transform: translateX(-50%);
     font-size: clamp(20px, 2.5vw, 32px);
@@ -1315,12 +1316,12 @@ span.partInfo .job {
     text-transform: none;
     /* Allow normal case */
     text-align: center;
-    z-index: 100;
-    /* High Z */
+    z-index: 1000;
+    /* Very High Z */
     width: 90%;
 }
 
-.special-msg.hidden {
+#specialMsg.hidden {
     display: none !important;
     opacity: 0;
     transform: translateX(-50%) scale(0.9);
