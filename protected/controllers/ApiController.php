@@ -7,6 +7,21 @@ class ApiController extends Controller
         return array();
     }
 
+    private $ACCESS_CODE = '6868'; // Mã bảo mật truy cập
+
+    public function actionCheckAuth()
+    {
+        $input = file_get_contents('php://input');
+        $data = CJSON::decode($input);
+        $code = isset($data['code']) ? $data['code'] : '';
+
+        if ($code === $this->ACCESS_CODE) {
+            $this->json(['ok' => true]);
+        } else {
+            $this->json(['ok' => false, 'msg' => 'Mã truy cập không đúng!']);
+        }
+    }
+
     private function json($arr, $code = 200)
     {
         header('Content-Type: application/json; charset=utf-8');

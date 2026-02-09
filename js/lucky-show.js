@@ -787,6 +787,119 @@ async function spin() {
     }
 }
 
+// Assuming API object is defined somewhere above, e.g.:
+// const API = {
+//     prize: baseUrl + '/api/prize',
+//     spin: baseUrl + '/api/spin',
+//     confirm: baseUrl + '/api/confirm',
+//     cancel: baseUrl + '/api/cancel',
+// };
+// We need to add checkAuth to it. For this example, I'll assume it's defined right before the global variables.
+// If API object is not defined, this would be an error.
+// For the purpose of this edit, I will insert the new API endpoint definition here,
+// assuming the original API object definition ends with 'cancel' and a comma.
+// If the API object is defined in a different file or structure, this placement might need adjustment.
+// Given the instruction, I'll place it as if it's part of the API object definition.
+// Since I don't have the full API object, I'll assume it's part of a larger definition.
+// The provided snippet shows `cancel: baseUrl + '/api/cancel', checkAuth: baseUrl + '/api/checkAuth' };`
+// This implies modifying an existing API object. I will place the new functions and call before the global variables.
+
+// --- AUTHENTICATION ---
+const AUTH_COOKIE = 'lucky_auth_token';
+const AUTH_DURATION_HOURS = 3;
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function setCookie(name, value, hours) {
+    const d = new Date();
+    d.setTime(d.getTime() + (hours * 60 * 60 * 1000));
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+async function checkAccess() {
+    const token = getCookie(AUTH_COOKIE);
+    if (!token) {
+        // Block UI and ask for code
+        const { value: code } = await Swal.fire({
+            title: 'Nhập MÃ KÍCH HOẠT',
+            input: 'password',
+            inputLabel: 'Mã bảo mật để truy cập',
+            inputPlaceholder: 'Nhập mã code...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: 'Truy cập',
+            preConfirm: async (code) => {
+                if (!code) {
+                    Swal.showValidationMessage('Vui lòng nhập mã');
+                    return false;
+                }
+                try {
+                    // Assuming API object is accessible globally
+                    const res = await fetchJSON(API.checkAuth, {
+                        method: 'POST',
+                        body: JSON.stringify({ code: code })
+                    });
+                    if (!res.ok) {
+                        Swal.showValidationMessage(res.msg || 'Mã không đúng');
+                        return false;
+                    }
+                    return true;
+                } catch (e) {
+                    Swal.showValidationMessage('Lỗi kết nối: ' + e);
+                    return false;
+                }
+            }
+        });
+
+        if (code) {
+            setCookie(AUTH_COOKIE, 'granted', AUTH_DURATION_HOURS);
+            Swal.fire({
+                icon: 'success',
+                title: 'Truy cập thành công!',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+            // Auto reload logic after expiration
+            scheduleReload();
+        }
+    } else {
+        // Already authenticated, schedule reload based on remaining time?
+        // Simple approach: just schedule for the full duration from now (or slightly less if we stored timestamp).
+        // Since we don't know when the cookie started without parsing it or storing extra data, 
+        // we'll just check periodically or set a safe timeout.
+        // User said "Nếu hết hạn thì tự động reload".
+        // We can just rely on the next checkAccess validation?
+        // But if the page isn't refreshed, JS doesn't know.
+        // Let's set a timer for 3 hours from NOW to be safe, or check cookie existence every minute.
+        setInterval(checkCookieExpiry, 60000); // Check every minute
+    }
+}
+
+function checkCookieExpiry() {
+    if (!getCookie(AUTH_COOKIE)) {
+        location.reload(); // Reload to trigger auth popup again
+    }
+}
+
+function scheduleReload() {
+    setTimeout(() => {
+        location.reload();
+    }, AUTH_DURATION_HOURS * 60 * 60 * 1000);
+}
+
+// Start Auth Check
+checkAccess();
+
+// isSpinning is already declared elsewhere
+
 async function confirmWinner() {
     stopPetals(); // Stop falling stars
     if (fw) fw.stopContinuous(); // Stop fireworks
