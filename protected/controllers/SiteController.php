@@ -6,7 +6,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $this->render('index');
+        $this->redirect(['site/show']);
     }
 
     public function actionError()

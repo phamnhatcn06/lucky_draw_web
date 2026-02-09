@@ -3,7 +3,7 @@
 return [
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
     'name' => 'Lucky Draw',
-    'defaultController' => 'site',
+    'defaultController' => 'site/show',
     'import' => [
         'application.models.*',
         'application.components.*',
