@@ -97,8 +97,9 @@ class ApiController extends Controller
             $this->json(['ok' => false, 'msg' => 'Missing params']);
             return;
         }
-        if (!isset($data['id']) || !isset($data['prize_id'])) {
+        if (!isset($data['id'], $data['prize_id'])) {
             $this->json(['ok' => false, 'msg' => 'Missing params']);
+            return;
         }
 
         // Update confirm = 0 để không tính vào giải, nhưng vẫn giữ trong bảng winners để không quay lại vào người này
@@ -156,6 +157,7 @@ class ApiController extends Controller
         LEFT JOIN (
             SELECT prize_id, COUNT(*) c 
             FROM winners 
+            where confirm = 1
             GROUP BY prize_id
         ) w ON w.prize_id = p.id
         WHERE p.id = :id
@@ -185,14 +187,10 @@ class ApiController extends Controller
             $extraWhere = "";
             $queryParams = [];
 
-            // Check exclude setting
-            $excludeActive = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_active'")->queryScalar();
-            if ($excludeActive == 1) {
-                $kw = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_keyword'")->queryScalar();
-                if (!$kw)
-                    $kw = 'Nhà thầu';
-                $extraWhere = " AND (p.department NOT LIKE :kw AND p.company NOT LIKE :kw AND p.full_name NOT LIKE :kw)";
-                $queryParams[':kw'] = '%' . $kw . '%';
+            // Check exclude partners setting
+            $excludePartners = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_partners'")->queryScalar();
+            if ($excludePartners == 1) {
+                $extraWhere .= " AND (p.is_partner IS NULL OR p.is_partner = 0)";
             }
 
             $winner = Yii::app()->db->createCommand("
@@ -207,7 +205,8 @@ class ApiController extends Controller
 
             if (!$winner) {
                 $tx->rollback();
-                $this->json(array('ok' => false, 'error' => 'Không còn người hợp lệ'));
+                $this->json(['ok' => false, 'error' => 'Không còn người hợp lệ']);
+                return;
             }
 
             // 3) Insert winner (DB UNIQUE đảm bảo chỉ trúng 1 lần)

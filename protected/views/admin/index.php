@@ -473,6 +473,15 @@ $eventTitle = isset($settings['event_title']) ? $settings['event_title'] : 'Luck
                                     placeholder="Từ khóa cần lọc (VD: Nhà thầu)">
                              <small style="opacity:0.7;display:block;margin-top:5px">Những người có Tên/Phòng ban/Công ty chứa từ khóa này sẽ bị loại khỏi vòng quay.</small>
                         </div>
+
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.3); margin-top: 15px;">
+                             <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:5px;font-weight:bold;color:#93c5fd">
+                                 <input type="hidden" name="settings[exclude_partners]" value="0">
+                                 <input type="checkbox" name="settings[exclude_partners]" value="1" <?php if(!empty($settings['exclude_partners'])) echo 'checked'; ?>> 
+                                 LOẠI BỎ "ĐỐI TÁC" (is_partner=1)
+                             </label>
+                             <small style="opacity:0.7;display:block;">Bỏ qua những người có đánh dấu <b>is_partner=1</b> khi upload.</small>
+                        </div>
                     </div>
 
                     <div style="margin-top: 30px;">

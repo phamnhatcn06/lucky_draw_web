@@ -159,15 +159,18 @@ class AdminController extends Controller
                 if ($code === '' || $name === '')
                     continue;
 
+                $isPartner = isset($map['is_partner']) ? (int) ($row[$map['is_partner']] ?? 0) : 0;
+
                 Yii::app()->db->createCommand("
-          INSERT INTO participants (code, full_name, department, company, is_active)
-          VALUES (:c,:n,:d,:co,1)
+          INSERT INTO participants (code, full_name, department, company, is_partner, is_active)
+          VALUES (:c,:n,:d,:co,:ip,1)
           ON DUPLICATE KEY UPDATE
             full_name=VALUES(full_name),
             department=VALUES(department),
             company=VALUES(company),
+            is_partner=VALUES(is_partner),
             is_active=1
-        ")->execute([':c' => $code, ':n' => $name, ':d' => $dept, ':co' => $comp]);
+        ")->execute([':c' => $code, ':n' => $name, ':d' => $dept, ':co' => $comp, ':ip' => $isPartner]);
             }
             $tx->commit();
         } catch (Exception $e) {
