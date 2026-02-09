@@ -1030,9 +1030,11 @@ body {
 /* cánh gà */
 .winners-side {
     position: fixed;
-    top: 12vh;
-    bottom: 15vh;
-    /* Leave space for bottom controls */
+    top: auto;
+    bottom: 50%;
+    /* Start from middle... */
+    max-height: 48vh;
+    /* ...grow to top (almost) */
     height: auto;
     transform: none;
     width: 17vw;
@@ -1064,14 +1066,16 @@ body {
 }
 
 /* danh sách */
+/* danh sách */
 .winners-side ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column;
-    flex-direction: column;
+    flex-direction: column-reverse;
+    /* Stack upwards from bottom */
     /* Tighter list spacing */
+    gap: 6px;
     overflow-y: auto;
     flex: 1;
     pointer-events: auto;
