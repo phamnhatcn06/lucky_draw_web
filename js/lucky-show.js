@@ -791,13 +791,8 @@ async function confirmWinner() {
             prize_id: currentPrizeId
         })
     });
-    // 👉 lấy dữ liệu đang hiển thị trên popup
-    const winner = {
-        code: document.getElementById('bigCode').textContent,
-        full_name: document.getElementById('fullName').textContent,
-        department: document.getElementById('department').textContent,
-        company: document.getElementById('company').textContent
-    };
+    // 👉 lấy dữ liệu từ biến global (chứa ID đầy đủ)
+    const winner = { ...currentWinner };
 
     // ✅ ĐẨY SANG CÁNH GÀ
     addWinnerToSide(winner);

@@ -98,6 +98,10 @@ class ApiController extends Controller
     public function actionCancelWinner()
     {
         $data = json_decode(file_get_contents('php://input'), true);
+        if (isset($data['id']) && $data['id'] == 'undefined') {
+            $this->json(['ok' => false, 'msg' => 'Missing params']);
+            return;
+        }
         if (!isset($data['id']) || !isset($data['prize_id'])) {
             $this->json(['ok' => false, 'msg' => 'Missing params']);
         }
