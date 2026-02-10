@@ -87,7 +87,7 @@ body {
 .prize {
     /* Position inside board - CENTERED (Idle state) */
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 0;
     width: 100%;
     transform: translateY(-50%);
@@ -593,15 +593,15 @@ body {
     transform: scale(0.2);
 }
 
-/* Shrink dice 5x as requested */
+/* Shrink dice scale (0.2 -> 0.3 as requested 1.5x increase) */
 .diceWrap.isIdle {
-    transform: scale(0.2);
+    transform: scale(0.3);
     opacity: 1;
 }
 
 .diceWrap.isSpinning {
     /* Keep shrinks during spin as well */
-    transform: scale(0.2);
+    transform: scale(0.3);
     opacity: 1;
 }
 

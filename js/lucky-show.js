@@ -229,29 +229,6 @@ function stopDice() {
     diceAnim.classList.remove('spinning');
 }
 
-function hideWinner() {
-    winnerBox.classList.add('hidden');
-    winnerBox.classList.remove('pop');
-}
-
-function showWinner(data) {
-    prizeNameEl.textContent = data.prize.name;
-
-    bigCodeEl.textContent = data.winner.code;
-    bigCodeEl.classList.add('glow');
-
-    fullNameEl.textContent = data.winner.full_name;
-    departmentEl.textContent = data.winner.department;
-    companyEl.textContent = data.winner.company;
-
-    winnerBox.classList.remove('hidden');
-    winnerBox.classList.remove('pop');
-    void winnerBox.offsetWidth;
-    winnerBox.classList.add('pop');
-
-    setTimeout(() => bigCodeEl.classList.remove('glow'), 4000);
-}
-
 // ---------- fireworks canvas ----------
 let fw = null;
 if (window.ModernFireworks) {
@@ -647,6 +624,9 @@ function hideWinner() {
     document.getElementById('winnerOverlay').classList.add('hidden');
     const popup = document.getElementById('winnerPopup');
     popup.classList.remove('show');
+
+    // Restore dice/board to idle state (so prize name is visible)
+    diceIdleSmall();
 
     setTimeout(() => popup.classList.add('hidden'), 200);
 }
