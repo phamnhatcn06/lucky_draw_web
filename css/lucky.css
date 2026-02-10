@@ -97,8 +97,8 @@ body {
     font-weight: 900;
     letter-spacing: .08em;
     color: var(--gold);
-    /* Large font for idle state */
-    font-size: clamp(30px, 7vmin, 70px);
+    /* Reduced font size as requested */
+    font-size: clamp(20px, 5vmin, 50px);
     text-shadow: 0 12px 45px rgba(0, 0, 0, .55);
     text-transform: uppercase;
     line-height: 1.2;
@@ -110,7 +110,7 @@ body {
 .board.isSpinning .prize {
     top: 15%;
     transform: translateY(0);
-    font-size: clamp(24px, 5vmin, 50px);
+    font-size: clamp(18px, 4vmin, 40px);
 }
 
 /*.dice-wrap{*/
