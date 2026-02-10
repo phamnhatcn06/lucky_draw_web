@@ -2,6 +2,7 @@
     --red: #7a0012;
     --gold: #f7d36a;
     --border: rgba(255, 255, 255, .18);
+    --dice-gap: 40px;
 }
 
 * {
@@ -84,30 +85,32 @@ body {
 }
 
 .prize {
-    /* Position inside board */
+    /* Position inside board - CENTERED (Idle state) */
     position: absolute;
-    top: 15%;
-    /* Slighty above center */
+    top: 50%;
     left: 0;
     width: 100%;
+    transform: translateY(-50%);
     text-align: center;
     z-index: 10;
 
     font-weight: 900;
     letter-spacing: .08em;
     color: var(--gold);
-    /* Make it larger as requested */
-    font-size: clamp(24px, 5vmin, 55px);
+    /* Large font for idle state */
+    font-size: clamp(30px, 7vmin, 70px);
     text-shadow: 0 12px 45px rgba(0, 0, 0, .55);
     text-transform: uppercase;
     line-height: 1.2;
     pointer-events: none;
-    transition: top 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Shift prize up slightly when board is spinning to avoid overlapping dice */
+/* Shift prize up and shrink slightly when board is spinning */
 .board.isSpinning .prize {
-    top: 10%;
+    top: 15%;
+    transform: translateY(0);
+    font-size: clamp(24px, 5vmin, 50px);
 }
 
 /*.dice-wrap{*/
@@ -258,8 +261,8 @@ body {
 }
 
 .dice {
-    width: 220px;
-    height: 220px;
+    width: 80px;
+    height: 80px;
     position: relative;
     transform-style: preserve-3d;
     transform: rotateX(20deg) rotateY(25deg);
@@ -272,35 +275,36 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 120px;
+    font-size: 80px;
     background: rgba(255, 255, 255, .14);
     border: 2px solid rgba(255, 255, 255, .22);
-    border-radius: 15px;
+    border-radius: 10px;
+    /* Reduced from 15px */
     backdrop-filter: blur(6px);
 }
 
 .f1 {
-    transform: translateZ(110px)
+    transform: translateZ(40px)
 }
 
 .f2 {
-    transform: rotateY(90deg) translateZ(110px)
+    transform: rotateY(90deg) translateZ(40px)
 }
 
 .f3 {
-    transform: rotateY(180deg) translateZ(110px)
+    transform: rotateY(180deg) translateZ(40px)
 }
 
 .f4 {
-    transform: rotateY(-90deg) translateZ(110px)
+    transform: rotateY(-90deg) translateZ(40px)
 }
 
 .f5 {
-    transform: rotateX(90deg) translateZ(110px)
+    transform: rotateX(90deg) translateZ(40px)
 }
 
 .f6 {
-    transform: rotateX(-90deg) translateZ(110px)
+    transform: rotateX(-90deg) translateZ(40px)
 }
 
 /*.dice.spinning {*/
@@ -588,15 +592,15 @@ body {
     transform: scale(0.2);
 }
 
+/* Shrink dice 5x as requested */
 .diceWrap.isIdle {
-    /* nhỏ 5 lần khi chờ */
     transform: scale(0.2);
     opacity: 1;
 }
 
 .diceWrap.isSpinning {
-    /* phóng to khi quay */
-    transform: scale(1);
+    /* Keep shrinks during spin as well */
+    transform: scale(0.2);
     opacity: 1;
 }
 

@@ -696,6 +696,7 @@ async function spin() {
 
     // 2) phóng to + quay
     if (typeof flashScreen === 'function') flashScreen();
+    diceSpinningBig(); // Add this call to trigger CSS class change
     startDice3D();
 
     try {
@@ -1005,7 +1006,9 @@ document.addEventListener('keydown', function (e) {
 });
 
 // ✅ Ẩn dice ngay từ đầu
-hideDice();
+// ✅ Ẩn dice ngay từ đầu nhưng hiện board (để hiện tên giải)
+// hideDice(); // Don't hide completely, use idle state
+diceIdleSmall(); // Show board and small dice
 refreshPrizeAndStatus();
 
 let sideToggle = false;
