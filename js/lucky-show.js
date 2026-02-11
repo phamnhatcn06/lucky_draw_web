@@ -975,7 +975,7 @@ async function cancelWinner() {
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Đúng, huỷ nó!',
+        confirmButtonText: 'Đúng, huỷ kết quả!',
         cancelButtonText: 'Không, giữ lại'
     });
 

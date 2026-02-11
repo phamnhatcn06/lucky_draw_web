@@ -114,7 +114,7 @@
         btn.addEventListener('click', async () => {
             // Add glow effect immediately
             btn.classList.add('clicking');
-            
+
             // Disable button
             btn.disabled = true;
             status.textContent = "Đang gửi lệnh...";
@@ -122,7 +122,7 @@
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
-                
+
                 if (data.ok) {
                     status.textContent = "Đã gửi lệnh QUAY!";
                 } else {
@@ -131,12 +131,12 @@
             } catch (e) {
                 status.textContent = "Lỗi kết nối";
             } finally {
-                // Remove effect and re-enable after 10 seconds
+                // Remove effect and re-enable after 5 seconds
                 setTimeout(() => {
                     status.textContent = "Sẵn sàng";
                     btn.disabled = false;
                     btn.classList.remove('clicking');
-                }, 10000);
+                }, 5000);
             }
         });
     </script>
