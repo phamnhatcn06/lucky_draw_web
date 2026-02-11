@@ -9,7 +9,8 @@
         body {
             margin: 0;
             padding: 0;
-            background: #000;
+            background: url("/images/background.jpg") no-repeat center center fixed;
+            background-size: cover;
             color: #fff;
             display: flex;
             flex-direction: column;
