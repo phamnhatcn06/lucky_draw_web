@@ -213,11 +213,11 @@ class ApiController extends Controller
             $extraWhere = "";
             $queryParams = [];
 
-            if ($prize['code'] == 'first' && $count == 2) {
-                $extraWhere .= " AND p.id = 194 ";
-            } else {
-                $extraWhere .= " AND p.id != 194 ";
-            }
+            // if ($prize['code'] == 'first' && $count == 2) {
+            //     $extraWhere .= " AND p.id = 194 ";
+            // } else {
+            //     $extraWhere .= " AND p.id != 194 ";
+            // }
 
             // Check exclude toggle (Active)
             $excludeActive = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_active'")->queryScalar();

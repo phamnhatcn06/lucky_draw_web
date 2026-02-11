@@ -11,7 +11,7 @@ class AdminController extends Controller
     {
         return [
             ['allow', 'actions' => ['login'], 'users' => ['*']],
-            ['allow', 'actions' => ['index', 'logout', 'savePrizes', 'uploadParticipants', 'resetWinners', 'settings'], 'users' => ['@']],
+            ['allow', 'actions' => ['index', 'logout', 'savePrizes', 'uploadParticipants', 'resetWinners', 'settings', 'exportWinners'], 'users' => ['@']],
             ['deny', 'users' => ['*']],
         ];
     }
@@ -199,5 +199,42 @@ class AdminController extends Controller
             Yii::app()->user->setFlash('success', 'Đã lưu cấu hình!');
         }
         $this->redirect(['admin/index']);
+    }
+    public function actionExportWinners()
+    {
+        $rows = Yii::app()->db->createCommand("
+            SELECT pr.prize_name, p.code, p.full_name, p.department, p.company, w.won_at
+            FROM winners w
+            JOIN prizes pr ON pr.id = w.prize_id
+            JOIN participants p ON p.id = w.participant_id
+            WHERE w.confirm = 1
+            ORDER BY w.won_at ASC
+        ")->queryAll();
+
+        $filename = 'winners_' . date('Y-m-d_H-i') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+
+        $out = fopen('php://output', 'w');
+        // Add BOM for Excel UTF-8 compatibility
+        fputs($out, "\xEF\xBB\xBF");
+
+        // Header
+        fputcsv($out, ['Giải thưởng', 'Mã NV', 'Họ tên', 'Phòng ban', 'Công ty', 'Thời gian trúng']);
+
+        // Data
+        foreach ($rows as $row) {
+            fputcsv($out, [
+                $row['prize_name'],
+                $row['code'],
+                $row['full_name'],
+                $row['department'],
+                $row['company'],
+                $row['won_at']
+            ]);
+        }
+        fclose($out);
+        Yii::app()->end();
     }
 }
