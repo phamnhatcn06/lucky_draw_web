@@ -21,6 +21,35 @@
             overflow: hidden;
         }
 
+        @keyframes pulse-gold {
+
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(255, 215, 0, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+            }
+        }
+
+        @keyframes glow-burst {
+            0% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 100px rgba(255, 215, 0, 1), 0 0 200px rgba(255, 140, 0, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            }
+        }
+
         #btnSpin {
             width: 80vw;
             height: 80vw;
@@ -40,18 +69,34 @@
             justify-content: center;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            transition: transform 0.1s;
+            transition: all 0.2s;
+            animation: pulse-gold 2s infinite;
         }
 
         #btnSpin:active {
             transform: scale(0.95);
-            background: radial-gradient(circle, #ff8c00, #ff4500);
+        }
+
+        /* Strong glow when clicking */
+        .clicking {
+            animation: glow-burst 0.5s ease-out forwards !important;
+            transform: scale(0.95);
+            filter: brightness(1.2);
+        }
+
+        #btnSpin:disabled {
+            filter: grayscale(0.8);
+            opacity: 0.7;
+            cursor: not-allowed;
+            animation: none;
         }
 
         .status {
             margin-top: 30px;
             font-size: 1.2rem;
             opacity: 0.7;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
         }
     </style>
 </head>
