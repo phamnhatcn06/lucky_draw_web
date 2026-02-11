@@ -1489,9 +1489,25 @@ span.partInfo .job {
 }
 
 .prize-counter {
-    font-size: 18px !important;
-    padding: 5px 16px !important;
-    min-width: 80px;
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Move to very bottom */
+
+    font-size: 24px !important;
+    padding: 0 !important;
+    min-width: auto;
+
+    color: rgba(255, 255, 255, 0.6) !important;
+    background: none !important;
+    border: none !important;
+    text-shadow: none !important;
+    font-weight: normal !important;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 5;
 }
 
 .next-price {
