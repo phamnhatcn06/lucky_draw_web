@@ -51,6 +51,7 @@ class AdminController extends Controller
       FROM winners w
       JOIN prizes pr ON pr.id=w.prize_id
       JOIN participants p ON p.id=w.participant_id
+      where w.confirm = 1
       ORDER BY w.won_at DESC
       LIMIT 20
     ")->queryAll();

@@ -314,7 +314,7 @@ function spawnPetals() {
             y: -Math.random() * 300,
             vy: 3 + Math.random() * 4, // Much faster: 3-7 instead of 1-3.5
             vx: -0.8 + Math.random() * 1.6,
-            size: 10 + Math.random() * 12,
+            size: 3 + Math.random() * 5,
             rot: Math.random() * Math.PI,
             vr: -0.03 + Math.random() * 0.06,
         });
@@ -375,7 +375,7 @@ function drawPetals() {
                 y: -Math.random() * 50,
                 vy: 3 + Math.random() * 4, // Much faster: 3-7
                 vx: -0.8 + Math.random() * 1.6,
-                size: 10 + Math.random() * 12,
+                size: 3 + Math.random() * 5,
                 rot: Math.random() * Math.PI,
                 vr: -0.03 + Math.random() * 0.06,
             });
