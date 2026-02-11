@@ -154,8 +154,7 @@ function diceRAF() {
 diceRAF();
 
 // --- REMOTE CONTROL POLLING ---
-API.remoteSpin = baseUrl + '/api/remoteSpin';
-API.checkRemote = baseUrl + '/api/checkRemote';
+// API URLs are already in window.__API (assigned to API const)
 
 // Poll every 1s
 setInterval(async () => {
