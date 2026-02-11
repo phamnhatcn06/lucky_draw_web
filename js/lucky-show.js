@@ -307,14 +307,14 @@ resizePetal();
 
 function spawnPetals() {
     petals = [];
-    const count = 80; // Increased from 40
+    const count = 200; // Increased density (was 80)
     for (let i = 0; i < count; i++) {
         petals.push({
             x: Math.random() * (petalCanvas ? petalCanvas.width : window.innerWidth),
             y: -Math.random() * 300,
-            vy: 3 + Math.random() * 4, // Much faster: 3-7 instead of 1-3.5
+            vy: 3 + Math.random() * 4,
             vx: -0.8 + Math.random() * 1.6,
-            size: 3 + Math.random() * 5,
+            size: 5 + Math.random() * 7, // Slightly bigger (5-12px)
             rot: Math.random() * Math.PI,
             vr: -0.03 + Math.random() * 0.06,
         });
@@ -368,14 +368,14 @@ function drawPetals() {
     petals = petals.filter(p => p.y < petalCanvas.height + 40);
 
     // Continuously spawn new petals while running - More stars, faster
-    if (petals.length < 60) { // Increased threshold from 30 to 60
-        for (let i = 0; i < 10; i++) { // Spawn 10 at a time instead of 5
+    if (petals.length < 150) { // Maintain higher density
+        for (let i = 0; i < 15; i++) {
             petals.push({
                 x: Math.random() * petalCanvas.width,
                 y: -Math.random() * 50,
-                vy: 3 + Math.random() * 4, // Much faster: 3-7
+                vy: 3 + Math.random() * 4,
                 vx: -0.8 + Math.random() * 1.6,
-                size: 3 + Math.random() * 5,
+                size: 5 + Math.random() * 7, // Slightly bigger
                 rot: Math.random() * Math.PI,
                 vr: -0.03 + Math.random() * 0.06,
             });
