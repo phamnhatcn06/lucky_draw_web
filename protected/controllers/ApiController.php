@@ -222,6 +222,17 @@ class ApiController extends Controller
             }
 
             // 2) Lock + random người chưa trúng
+
+            // Check for pending winners (confirm = -1)
+            $pendingCount = Yii::app()->db->createCommand("
+                SELECT COUNT(*) FROM winners WHERE prize_id=:pid AND confirm=-1
+            ")->queryScalar([':pid' => $prizeId]);
+
+            if ($pendingCount > 0) {
+                $this->json(['ok' => false, 'error' => 'Vẫn còn kết quả chưa xác nhận (Pending)! Hãy xác nhận hoặc hủy trước khi quay tiếp.']);
+                return;
+            }
+
             $extraWhere = "";
             $queryParams = [];
 
