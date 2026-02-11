@@ -978,8 +978,25 @@ async function cancelWinner() {
     stopPetals(); // Stop falling stars
     stopMegaConfetti(); // Ensure special confetti stops
     if (fw) fw.stopContinuous(); // Stop fireworks
+
+    // Call API to cancel the winner (delete from DB)
+    if (currentWinner && currentWinner.id) {
+        try {
+            const res = await fetchJSON(API.cancel, {
+                method: 'POST',
+                body: JSON.stringify({
+                    participant_id: currentWinner.id, // Or depends on API expectation
+                    prize_id: currentPrizeId
+                })
+            });
+            if (!res.ok) console.error("Failed to cancel winner:", res);
+        } catch (e) {
+            console.error("Error cancelling winner:", e);
+        }
+    }
+
     hideWinner();
-    refreshPrizeAndStatus();
+    await refreshPrizeAndStatus();
 }
 
 
