@@ -153,6 +153,37 @@ function diceRAF() {
 
 diceRAF();
 
+// --- REMOTE CONTROL POLLING ---
+API.remoteSpin = baseUrl + '/api/remoteSpin';
+API.checkRemote = baseUrl + '/api/checkRemote';
+
+// Poll every 1s
+setInterval(async () => {
+    // Only poll if tab is visible to save resources? (Optional)
+    if (document.hidden) return;
+
+    // Don't spin if already spinning or locked
+    if (isSpinning || prizeLocked) return;
+
+    try {
+        const res = await fetchJSON(API.checkRemote);
+        if (res && res.ok && res.command === 'spin') {
+            console.log("Remote spin command received!");
+            // Check again to be safe
+            if (!isSpinning && !prizeLocked) {
+                // Trigger the spin
+                // If spin() requires event, we might need to simulate or just call it
+                // spin() expects 'e' but handles missing 'e' gracefully?
+                // Looking at spin(e): if(e) e.preventDefault();
+                // So calling spin() without args is fine.
+                spin();
+            }
+        }
+    } catch (e) {
+        // console.error("Remote poll error", e); // Silence errors to avoid console spam
+    }
+}, 1000);
+
 // show/hide/scale states
 function diceHidden() {
     if (!diceWrap) return;

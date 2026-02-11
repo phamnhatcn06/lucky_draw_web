@@ -153,6 +153,8 @@
             cancel: "<?php echo $baseUrl; ?>/api/cancelWinner",
             nextPrize: "<?php echo $baseUrl; ?>/api/nextPrize",
             checkAuth: "<?php echo $baseUrl; ?>/api/checkAuth",
+            remoteSpin: "<?php echo $baseUrl; ?>/api/remoteSpin",
+            checkRemote: "<?php echo $baseUrl; ?>/api/checkRemote",
         };
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

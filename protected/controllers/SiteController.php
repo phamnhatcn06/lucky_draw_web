@@ -45,4 +45,9 @@ class SiteController extends Controller
 
         $this->render('show', ['winnerList' => $winnerList, 'prize' => $currentPrize]);
     }
+    public function actionRemote()
+    {
+        $this->layout = false; // No layout for simple remote
+        $this->render('remote');
+    }
 }

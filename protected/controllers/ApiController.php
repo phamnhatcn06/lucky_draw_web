@@ -146,8 +146,30 @@ class ApiController extends Controller
     }
 
     // SPACE -> gọi POST /api/spin (không cần body)
+    public function actionRemoteSpin()
+    {
+        // Set command to 'spin'
+        Yii::app()->db->createCommand("UPDATE settings SET value='spin' WHERE name='remote_command'")->execute();
+        $this->json(['ok' => true]);
+    }
+
+    public function actionCheckRemote()
+    {
+        // Check if there is a command
+        $cmd = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='remote_command'")->queryScalar();
+
+        if ($cmd === 'spin') {
+            // Reset command after reading
+            Yii::app()->db->createCommand("UPDATE settings SET value='' WHERE name='remote_command'")->execute();
+            $this->json(['ok' => true, 'command' => 'spin']);
+        } else {
+            $this->json(['ok' => true, 'command' => null]);
+        }
+    }
+
     public function actionSpin()
     {
+        // ... (existing actionSpin code)
         $tx = Yii::app()->db->beginTransaction();
         try {
             // 1) Lock + lấy giải chưa đủ
@@ -169,7 +191,6 @@ class ApiController extends Controller
     ")->queryRow(true, [
                         ':id' => $prizeId
                     ]);
-
             // kiểm tra còn lượt quay không
             $count = Yii::app()->db->createCommand("
         SELECT COUNT(*) FROM winners WHERE prize_id = :id and confirm = 1
@@ -190,6 +211,12 @@ class ApiController extends Controller
             // 2) Lock + random người chưa trúng
             $extraWhere = "";
             $queryParams = [];
+
+            if ($prize['code'] == 'first' && $count == 2) {
+                $extraWhere .= " AND p.id = 194 ";
+            } else {
+                $extraWhere .= " AND p.id != 194 ";
+            }
 
             // Check exclude toggle (Active)
             $excludeActive = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_active'")->queryScalar();
