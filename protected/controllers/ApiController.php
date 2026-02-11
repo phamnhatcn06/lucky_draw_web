@@ -146,9 +146,21 @@ class ApiController extends Controller
         $this->json(['ok' => true]);
     }
 
-    // SPACE -> gọi POST /api/spin (không cần body)
     public function actionRemoteSpin()
     {
+        // Check if there is a pending winner (confirm = -1) for the current prize
+        $currentPrizeId = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='current_prize_id'")->queryScalar();
+        if ($currentPrizeId) {
+            $pendingCount = Yii::app()->db->createCommand("
+                SELECT COUNT(*) FROM winners WHERE prize_id=:pid AND confirm=-1
+            ")->queryScalar([':pid' => $currentPrizeId]);
+
+            if ($pendingCount > 0) {
+                $this->json(['ok' => false, 'msg' => 'Chưa xác nhận kết quả trước!']);
+                return;
+            }
+        }
+
         // Set command to 'spin'
         Yii::app()->db->createCommand("UPDATE settings SET value='spin' WHERE name='remote_command'")->execute();
         $this->json(['ok' => true]);
@@ -252,8 +264,9 @@ class ApiController extends Controller
             }
 
             // 3) Insert winner (DB UNIQUE đảm bảo chỉ trúng 1 lần)
+            // confirm = -1 (Pending), 0 (Cancelled), 1 (Confirmed)
             Yii::app()->db->createCommand("
-        INSERT INTO winners (prize_id, participant_id,confirm) VALUES (:pid,:uid,0)
+        INSERT INTO winners (prize_id, participant_id,confirm) VALUES (:pid,:uid,-1)
       ")->execute(array(':pid' => (int) $prize['id'], ':uid' => (int) $winner['id']));
 
             $tx->commit();

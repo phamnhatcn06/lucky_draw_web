@@ -44,7 +44,7 @@ class AdminController extends Controller
     {
         $prizes = Prize::model()->findAll(['order' => 'prize_order ASC']);
         $participantsCount = (int) Yii::app()->db->createCommand("SELECT COUNT(*) FROM participants")->queryScalar();
-        $activeCount = (int) Yii::app()->db->createCommand("SELECT COUNT(*) FROM participants WHERE is_active=1")->queryScalar();
+        $activeCount = (int) Yii::app()->db->createCommand("SELECT COUNT(*) FROM participants")->queryScalar();
 
         $lastWinners = Yii::app()->db->createCommand("
       SELECT w.won_at, pr.prize_name, p.code, p.full_name, p.department, p.company

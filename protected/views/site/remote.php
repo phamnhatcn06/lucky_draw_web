@@ -126,7 +126,9 @@
                 if (data.ok) {
                     status.textContent = "Đã gửi lệnh QUAY!";
                 } else {
-                    status.textContent = "Lỗi gửi lệnh";
+                    status.textContent = data.msg || "Lỗi gửi lệnh";
+                    btn.disabled = false;
+                    btn.classList.remove('clicking');
                 }
             } catch (e) {
                 status.textContent = "Lỗi kết nối";

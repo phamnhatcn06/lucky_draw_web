@@ -1491,7 +1491,7 @@ span.partInfo .job {
 .prize-counter {
     position: fixed;
     top: auto;
-    bottom: 20px;
+    bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
     /* Move to very bottom */
