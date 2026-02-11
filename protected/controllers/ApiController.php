@@ -57,6 +57,7 @@ class ApiController extends Controller
         LEFT JOIN (
             SELECT prize_id, COUNT(*) c
             FROM winners
+            WHERE confirm = 1
             GROUP BY prize_id
         ) w ON w.prize_id = p.id
         WHERE p.id = :id
