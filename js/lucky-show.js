@@ -536,7 +536,7 @@ function createConfettiParticle(x, y, sp, angle) {
         vy: Math.sin(angle) * sp,
         g: 0.25, // heavier gravity
         life: 100 + Math.random() * 60,
-        s: 3 + Math.random() * 5,
+        s: 2 + Math.random() * 4,
         r: Math.random() * Math.PI,
         vr: (-0.2 + Math.random() * 0.4),
         col: getRandomColor()
@@ -805,7 +805,13 @@ async function spin() {
 
         // 4) pháo hoa + petals + sweep
         await fireworksShow(res.data.prize.code);
-        if (typeof petalsShow === 'function') petalsShow();
+
+        // Only show stars (petals) if NOT special prize
+        const prizeCode = (res.data.prize && res.data.prize.code) ? res.data.prize.code.toLowerCase() : '';
+        if (typeof petalsShow === 'function' && prizeCode !== 'special') {
+            petalsShow();
+        }
+
         if (typeof sweepLight === 'function') sweepLight();
         await sleep(250);
 
