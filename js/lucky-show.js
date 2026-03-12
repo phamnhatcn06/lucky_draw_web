@@ -66,11 +66,14 @@ async function stopDice3D(code, staggerMs = 0) {
         // Trigger firework when THIS digit stops
         if (fw) {
             setTimeout(() => {
-                const rect = strip.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                if (!fw.running) fw.start();
-                fw.explodeAt(centerX, centerY);
+                const parentReel = strip.closest('.reel');
+                if (parentReel) {
+                    const rect = parentReel.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    if (!fw.running) fw.start();
+                    fw.explodeAt(centerX, centerY);
+                }
             }, stopTime * 1000);
         }
 
