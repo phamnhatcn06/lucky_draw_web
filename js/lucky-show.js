@@ -48,24 +48,29 @@ function startDice3D() {
 }
 
 async function stopDice3D(code, staggerMs = 0) {
-    // code is something like "123"
-    const digits = (code || "000").split('').slice(-3); // Get last 3 digits
-    for (let i = 0; i < reelStrips.length; i++) {
-        const strip = reelStrips[i];
+    const strips = document.querySelectorAll('.reel-strip');
+    const delay = parseInt(staggerMs) || 0;
+    const digits = (code || "000").split('').slice(-3);
+
+    for (let i = 0; i < strips.length; i++) {
+        const strip = strips[i];
         strip.classList.remove('spinning');
         const digit = parseInt(digits[i]) || 0;
-        // Each digit is 220px high. 
         const y = -(digit + 10) * 220;
-        
-        // Staggered stop transition timing
-        const stopTime = staggerMs > 0 ? 2.5 : (2 + i * 0.5);
+
+        const stopTime = delay > 0 ? 2.5 : (2 + i * 0.5);
         strip.style.transition = `transform ${stopTime}s cubic-bezier(0.45, 0.05, 0.55, 0.95)`;
         strip.style.transform = `translateY(${y}px)`;
-        
-        if (staggerMs > 0 && i < reelStrips.length - 1) {
-            await sleep(staggerMs);
+
+        // If staggered, wait between starting EACH strip's stop transition
+        if (delay > 0 && i < strips.length - 1) {
+            await sleep(delay);
         }
     }
+
+    // Wait for the LAST strip to finish its transition (2.5s or 3s)
+    const finalWait = delay > 0 ? 2500 : 3000;
+    await sleep(finalWait);
 }
 // --- REMOTE CONTROL POLLING ---
 // API URLs are already in window.__API (assigned to API const)
@@ -670,13 +675,13 @@ async function spin() {
 
         const staggerMs = (res.data.prize && res.data.prize.stagger_duration) ? res.data.prize.stagger_duration : 0;
         await stopDice3D(res.data.winner.code, staggerMs);
-        document.getElementById('specialMsg').classList.add('hidden'); // Hide message
-        if (specialMsgTimeout) clearTimeout(specialMsgTimeout); // Clear timeout just in case
-
-        // No more waiting for digital reels to stop completely before showing popup
+        
+        document.getElementById('specialMsg').classList.add('hidden');
+        if (specialMsgTimeout) clearTimeout(specialMsgTimeout);
 
         diceIdleSmall();
-        await sleep(180);
+        // Wait a bit before hiding to ensure smooth transition
+        await sleep(500); 
         diceHidden();
         if (!res.ok) {
             alert(res.error || 'Quay thất bại');
