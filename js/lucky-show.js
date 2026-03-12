@@ -51,6 +51,7 @@ async function stopDice3D(code, staggerMs = 0) {
     const strips = document.querySelectorAll('.reel-strip');
     const delay = parseInt(staggerMs) || 0;
     const digits = (code || "000").split('').slice(-3);
+    console.log(`[Reels] Stopping with stagger delay: ${delay}ms for code: ${code}`);
 
     for (let i = 0; i < strips.length; i++) {
         const strip = strips[i];
@@ -64,6 +65,7 @@ async function stopDice3D(code, staggerMs = 0) {
 
         // If staggered, wait between starting EACH strip's stop transition
         if (delay > 0 && i < strips.length - 1) {
+            console.log(`[Reels] Waiting ${delay}ms before stopping next digit...`);
             await sleep(delay);
         }
     }
@@ -673,7 +675,13 @@ async function spin() {
         audioWin.currentTime = 0;
         audioWin.play().catch(e => console.log('Audio autoplay blocked:', e));
 
-        const staggerMs = (res.data.prize && res.data.prize.stagger_duration) ? res.data.prize.stagger_duration : 0;
+        let staggerMs = (res.data.prize && res.data.prize.stagger_duration) ? parseInt(res.data.prize.stagger_duration) : 0;
+        const prizeName = (res.data.prize && res.data.prize.name) ? res.data.prize.name.toLowerCase() : '';
+        if (staggerMs === 0 && (prizeName.includes('nhất') || pCode === '1')) {
+            staggerMs = 5000; // Force 5s for 1st prize if not set
+            console.log('[Spin] Auto-detected First Prize, using default 5s stagger.');
+        }
+
         await stopDice3D(res.data.winner.code, staggerMs);
         
         document.getElementById('specialMsg').classList.add('hidden');
