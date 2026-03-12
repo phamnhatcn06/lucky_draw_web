@@ -63,6 +63,17 @@ async function stopDice3D(code, staggerMs = 0) {
         strip.style.transition = `transform ${stopTime}s cubic-bezier(0.45, 0.05, 0.55, 0.95)`;
         strip.style.transform = `translateY(${y}px)`;
 
+        // Trigger firework when THIS digit stops
+        if (fw) {
+            setTimeout(() => {
+                const rect = strip.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                if (!fw.running) fw.start();
+                fw.explodeAt(centerX, centerY);
+            }, stopTime * 1000);
+        }
+
         // If staggered, wait between starting EACH strip's stop transition
         if (delay > 0 && i < strips.length - 1) {
             console.log(`[Reels] Waiting ${delay}ms before stopping next digit...`);
