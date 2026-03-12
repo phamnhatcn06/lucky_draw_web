@@ -387,6 +387,7 @@ $eventTitle = isset($settings['event_title']) ? $settings['event_title'] : 'Luck
                                 <th width="80">Thứ tự</th>
                                 <th>Tên giải thưởng</th>
                                 <th width="100">Số lượng</th>
+                                <th width="120">Dừng chậm (ms)</th>
                                 <th width="120">ID</th>
                             </tr>
                         </thead>
@@ -399,6 +400,8 @@ $eventTitle = isset($settings['event_title']) ? $settings['event_title'] : 'Luck
                                             value="<?php echo CHtml::encode($p->prize_name); ?>"></td>
                                     <td><input type="number" class="table-input" name="quantity[<?php echo $p->id; ?>]"
                                             value="<?php echo $p->quantity; ?>"></td>
+                                    <td><input type="number" class="table-input" name="stagger_duration[<?php echo $p->id; ?>]"
+                                            value="<?php echo $p->stagger_duration; ?>" placeholder="0"></td>
                                     <td style="opacity:0.5">#<?php echo $p->id; ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -408,6 +411,7 @@ $eventTitle = isset($settings['event_title']) ? $settings['event_title'] : 'Luck
                                 <td><input type="text" class="form-control" name="new_prize_name"
                                         placeholder="Thêm giải mới..."></td>
                                 <td><input type="number" class="form-control" name="new_quantity" placeholder="SL"></td>
+                                <td><input type="number" class="form-control" name="new_stagger_duration" placeholder="Dừng chậm"></td>
                                 <td><span style="font-size:12px;color:#22c55e">+ New</span></td>
                             </tr>
                         </tbody>

@@ -85,20 +85,18 @@ body {
 }
 
 .prize {
-    /* Position inside board - CENTERED (Idle state) */
-    position: absolute;
-    top: 30%;
-    left: 0;
+    /* Positioned relative to the flex container (.board) */
+    position: relative;
     width: 100%;
-    transform: translateY(-50%);
+    margin-bottom: 40px; /* Space between prize and reels */
     text-align: center;
     z-index: 10;
 
     font-weight: 900;
     letter-spacing: .08em;
     color: var(--gold);
-    /* Force single line and smaller font */
-    font-size: clamp(16px, 4vmin, 40px);
+    /* Fine-tuned for better proportion */
+    font-size: clamp(22px, 5.5vmin, 55px);
     white-space: nowrap;
     text-shadow: 0 12px 45px rgba(0, 0, 0, .55);
     text-transform: uppercase;
@@ -107,11 +105,10 @@ body {
     transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Shift prize up and shrink slightly when board is spinning */
+/* Maintain relative position when spinning */
 .board.isSpinning .prize {
-    top: 15%;
-    transform: translateY(0);
-    font-size: clamp(18px, 4vmin, 40px);
+    transform: none;
+    font-size: clamp(24px, 6vmin, 65px);
 }
 
 /*.dice-wrap{*/
@@ -120,41 +117,16 @@ body {
 /*}*/
 /* Board (Plate Background) */
 .board {
-    /* Provide a white plate background */
     position: relative;
-    padding: 1.5vh 2vw;
-    /* Tighter padding */
+    padding: 0;
     max-width: 95vw;
     max-height: 70vh;
-    /* Ensure it fits on short screens */
     box-sizing: border-box;
-    /* Tighter padding to shrink the plate */
-    /* Space around dice */
-    border-radius: 50%;
-    /* Oval/Circle */
-
-    /* Make it look like a plate */
-    background: linear-gradient(145deg, #ffffff, #f0f0f0);
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        /* Drop shadow */
-        inset 0 0 30px rgba(0, 0, 0, 0.05),
-        /* Inner subtle shadow */
-        inset 0 0 0 6px rgba(255, 255, 255, 0.8);
-    /* Rim highlight */
-
-    /* Ensure flex centering of children (dice-wrap) */
     display: flex;
     justify-content: center;
     align-items: center;
-
-    /* Ensure it doesn't take full width if not needed */
     width: max-content;
     margin: 0 auto;
-    /* Center in spin-area */
-
-    /* Slight transparency to blend with fancy background? User said "màu trắng" (white). 
-       Let's keep it opaque or 90%. */
 }
 
 /* Ensure hidden works */
@@ -237,121 +209,19 @@ body {
 }
 
 .board {
-    margin-top: 20px;
-    /* Responsive: 55% of viewport height or max 70vw width */
-    width: min(55vh, 70vw);
-    /* Giảm kích thước nền tròn thêm */
-    aspect-ratio: 1 / 1;
-    /* Luôn vuông => tròn */
-    border-radius: 50%;
     display: flex;
+    flex-direction: column; /* Group prize and reels vertically */
     align-items: center;
     justify-content: center;
     position: relative;
-
-    background: radial-gradient(circle at 50% 45%, rgba(255, 255, 255, .06), rgba(0, 0, 0, .35)),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .06), transparent 65%);
-
-    box-shadow: 0 40px 100px rgba(0, 0, 0, .72),
-        inset 0 0 0 10px rgba(255, 255, 255, .05),
-        inset 0 0 0 2px rgba(255, 255, 255, .08);
+    padding: 20px;
+    /* Removed margin-top to allow .screen flexbox to center everything */
 }
 
 .board.hidden {
     display: none;
 }
 
-.dice {
-    width: 80px;
-    height: 80px;
-    position: relative;
-    transform-style: preserve-3d;
-    transform: rotateX(20deg) rotateY(25deg);
-    filter: drop-shadow(0 22px 55px rgba(0, 0, 0, .5));
-}
-
-.face {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    background: rgba(255, 255, 255, .14);
-    border: 2px solid rgba(255, 255, 255, .22);
-    border-radius: 10px;
-    /* Reduced from 15px */
-    backdrop-filter: blur(6px);
-}
-
-.f1 {
-    transform: translateZ(40px)
-}
-
-.f2 {
-    transform: rotateY(90deg) translateZ(40px)
-}
-
-.f3 {
-    transform: rotateY(180deg) translateZ(40px)
-}
-
-.f4 {
-    transform: rotateY(-90deg) translateZ(40px)
-}
-
-.f5 {
-    transform: rotateX(90deg) translateZ(40px)
-}
-
-.f6 {
-    transform: rotateX(-90deg) translateZ(40px)
-}
-
-/*.dice.spinning {*/
-/*    animation: diceShake 1.12s linear infinite, diceSpin 1.9s cubic-bezier(.2, .9, .2, 1) infinite;*/
-/*}*/
-
-.dice.spinning {
-    animation: diceShake 2.2s ease-in-out infinite;
-}
-
-@keyframes diceShake {
-    0% {
-        transform: translate(0, 0) rotateX(20deg) rotateY(25deg)
-    }
-
-    25% {
-        transform: translate(2px, -1px) rotateX(26deg) rotateY(28deg)
-    }
-
-    50% {
-        transform: translate(-2px, 2px) rotateX(18deg) rotateY(20deg)
-    }
-
-    75% {
-        transform: translate(-1px, -2px) rotateX(30deg) rotateY(24deg)
-    }
-
-    100% {
-        transform: translate(0, 0) rotateX(20deg) rotateY(25deg)
-    }
-}
-
-/*@keyframes diceSpin {*/
-/*    0% {*/
-/*        transform: rotateX(20deg) rotateY(25deg) rotateZ(0deg)*/
-/*    }*/
-/*    40% {*/
-/*        transform: rotateX(320deg) rotateY(240deg) rotateZ(140deg)*/
-/*    }*/
-/*    70% {*/
-/*        transform: rotateX(560deg) rotateY(520deg) rotateZ(290deg)*/
-/*    }*/
-/*    100% {*/
-/*        transform: rotateX(760deg) rotateY(760deg) rotateZ(460deg)*/
-/*    }*/
-/*}*/
 
 @keyframes diceSpin {
     0% {
@@ -612,6 +482,57 @@ body {
     /* Use the variable */
     align-items: center;
     justify-content: center;
+}
+
+/* Digit Reels Styles */
+.reels-wrap {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.reels-wrap.hidden {
+    display: none;
+}
+
+.reel {
+    width: 150px;
+    height: 220px;
+    background: rgba(255, 255, 255, 0.05); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.reel-strip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    /* Each digit is 220px high */
+    line-height: 220px;
+    font-size: 200px;
+    font-weight: 900;
+    color: #fff; /* White digits look better on dark bg */
+    font-family: 'Lato', sans-serif;
+    transition: transform 3s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+.reel-strip.spinning {
+    animation: reelSpin 0.5s linear infinite;
+}
+
+@keyframes reelSpin {
+    from { transform: translateY(0); }
+    to { transform: translateY(-50%); } /* Half of the strip (0-9 twice) */
 }
 
 /* 3D scene */

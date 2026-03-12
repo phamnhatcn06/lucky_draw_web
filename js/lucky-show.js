@@ -16,143 +16,57 @@ audioRolling.loop = true;
 const audioWin = new Audio('audio/win.mp3');
 
 let isSpinning = false;
-// ===== 3D DICE SETUP =====
-const diceWrap = document.getElementById('diceWrap');
+let spinCancelController = null;
+let prizeLocked = false;
 const boardWrap = document.getElementById('board');
-const cubes = [
-    document.getElementById('c1'),
-    document.getElementById('c2'),
-    document.getElementById('c3'),
-];
-let prizeLocked = false;   // 🔒 đang khóa, không cho sang giải mới
-const PIPS = {
-    1: ['p5'],
-    2: ['p1', 'p9'],
-    3: ['p1', 'p5', 'p9'],
-    4: ['p1', 'p3', 'p7', 'p9'],
-    5: ['p1', 'p3', 'p5', 'p7', 'p9'],
-    6: ['p1', 'p3', 'p4', 'p6', 'p7', 'p9'],
-};
-const FACE_NUM = { front: 1, back: 6, right: 3, left: 4, top: 2, bottom: 5 };
-const FACE_ORDER = ['front', 'right', 'left', 'back', 'top', 'bottom'];
+const reelsWrap = document.getElementById('reelsWrap');
+const reelStrips = document.querySelectorAll('.reel-strip');
 
-function makeFace(name, num) {
-    const f = document.createElement('div');
-    f.className = `face ${name}`;
-    (PIPS[num] || []).forEach(p => {
-        const dot = document.createElement('span');
-        dot.className = `pip ${p}`;
-        f.appendChild(dot);
-    });
-    return f;
+function diceHidden() {
+    if (!reelsWrap || !boardWrap) return;
+    reelsWrap.classList.add('hidden');
+    boardWrap.classList.add('hidden');
 }
-
-function buildCube(el) {
-    if (!el) return;
-    el.innerHTML = '';
-    FACE_ORDER.forEach(name => el.appendChild(makeFace(name, FACE_NUM[name])));
+function diceIdleSmall() {
+    if (!reelsWrap || !boardWrap) return;
+    reelsWrap.classList.remove('hidden');
+    boardWrap.classList.remove('hidden');
+    reelsWrap.style.transform = 'scale(1)';
 }
-
-cubes.forEach(buildCube);
-
-const diceState = cubes.map((el, i) => ({
-    el,
-    rx: -28 + i * 6,
-    ry: 35 + i * 10,
-    rz: 0,
-    tx: 0, ty: 0,       // Translation x, y
-    vx: 0, vy: 0, vz: 0, // Rotation velocity
-    vtx: 0, vty: 0,      // Translation velocity
-    spinning: false,
-}));
-
-function applyDice(d) {
-    if (!d.el) return;
-    // Add translation for "rolling" effect
-    d.el.style.transform = `translate3d(${d.tx}px, ${d.ty}px, 0) rotateX(${d.rx}deg) rotateY(${d.ry}deg) rotateZ(${d.rz}deg)`;
-}
-
-// function randVel(){
-//     const s = () => (Math.random() > 0.5 ? 1 : -1);
-//     return {
-//         vx: s() * (16 + Math.random()*30),
-//         vy: s() * (18 + Math.random()*34),
-//         vz: s() * (12 + Math.random()*26),
-//     };
-// }
-
-function randVel() {
-    const s = () => (Math.random() > 0.5 ? 1 : -1);
-    return {
-        vx: s() * (6 + Math.random() * 10),
-        vy: s() * (8 + Math.random() * 14),
-        vz: s() * (2 + Math.random() * 6),
-    };
+function diceSpinningBig() {
+    if (!reelsWrap || !boardWrap) return;
+    reelsWrap.classList.remove('hidden');
+    boardWrap.classList.remove('hidden');
+    reelsWrap.style.transform = 'scale(1)';
 }
 
 function startDice3D() {
-    diceState.forEach(d => {
-        const v = randVel();
-        d.vx = v.vx;
-        d.vy = v.vy;
-        d.vz = v.vz;
-
-        // Random tumbling velocity
-        d.vtx = (Math.random() - 0.5) * 40; // Mạnh hơn
-        d.vty = (Math.random() - 0.5) * 40;
-
-        d.spinning = true;
+    reelStrips.forEach(strip => {
+        strip.style.transition = 'none';
+        strip.classList.add('spinning');
     });
 }
 
-function stopDice3D() {
-    diceState.forEach(d => d.spinning = false);
-}
-
-function diceRAF() {
-    diceState.forEach(d => {
-        if (d.spinning) {
-            // ROTATION CHAOS
-            if (Math.random() < 0.05) { // Frequent changes
-                const v = randVel();
-                d.vx = v.vx;
-                d.vy = v.vy;
-                d.vz = v.vz;
-            }
-            d.rx += d.vx;
-            d.ry += d.vy;
-            d.rz += d.vz;
-
-            // TRANSLATION CHAOS (ROLLING)
-            d.tx += d.vtx;
-            d.ty += d.vty;
-
-            // Boundary bounce (keep within ~100px range)
-            const LIMIT = 80;
-            if (d.tx > LIMIT) { d.tx = LIMIT; d.vtx *= -0.8; }
-            if (d.tx < -LIMIT) { d.tx = -LIMIT; d.vtx *= -0.8; }
-            if (d.ty > LIMIT) { d.ty = LIMIT; d.vty *= -0.8; }
-            if (d.ty < -LIMIT) { d.ty = -LIMIT; d.vty *= -0.8; }
-
-            // Random jostle
-            if (Math.random() < 0.1) {
-                d.vtx += (Math.random() - 0.5) * 10;
-                d.vty += (Math.random() - 0.5) * 10;
-            }
-        } else {
-            // Return to center slowly
-            d.tx *= 0.85;
-            d.ty *= 0.85;
-            if (Math.abs(d.tx) < 0.5) d.tx = 0;
-            if (Math.abs(d.ty) < 0.5) d.ty = 0;
+async function stopDice3D(code, staggerMs = 0) {
+    // code is something like "123"
+    const digits = (code || "000").split('').slice(-3); // Get last 3 digits
+    for (let i = 0; i < reelStrips.length; i++) {
+        const strip = reelStrips[i];
+        strip.classList.remove('spinning');
+        const digit = parseInt(digits[i]) || 0;
+        // Each digit is 220px high. 
+        const y = -(digit + 10) * 220;
+        
+        // Staggered stop transition timing
+        const stopTime = staggerMs > 0 ? 2.5 : (2 + i * 0.5);
+        strip.style.transition = `transform ${stopTime}s cubic-bezier(0.45, 0.05, 0.55, 0.95)`;
+        strip.style.transform = `translateY(${y}px)`;
+        
+        if (staggerMs > 0 && i < reelStrips.length - 1) {
+            await sleep(staggerMs);
         }
-        applyDice(d);
-    });
-    requestAnimationFrame(diceRAF);
+    }
 }
-
-diceRAF();
-
 // --- REMOTE CONTROL POLLING ---
 // API URLs are already in window.__API (assigned to API const)
 
@@ -168,42 +82,14 @@ setInterval(async () => {
         const res = await fetchJSON(API.checkRemote);
         if (res && res.ok && res.command === 'spin') {
             console.log("Remote spin command received!");
-            // Check again to be safe
             if (!isSpinning && !prizeLocked) {
-                // Trigger the spin
-                // If spin() requires event, we might need to simulate or just call it
-                // spin() expects 'e' but handles missing 'e' gracefully?
-                // Looking at spin(e): if(e) e.preventDefault();
-                // So calling spin() without args is fine.
                 spin();
             }
         }
     } catch (e) {
-        // console.error("Remote poll error", e); // Silence errors to avoid console spam
+        // silence
     }
 }, 1000);
-
-// show/hide/scale states
-function diceHidden() {
-    if (!diceWrap) return;
-    diceWrap.classList.add('hidden');
-    boardWrap.classList.add('hidden');
-    diceWrap.classList.remove('isSpinning', 'isIdle');
-}
-
-function diceIdleSmall() {
-    if (!diceWrap) return;
-    diceWrap.classList.remove('hidden', 'isSpinning');
-    boardWrap.classList.remove('hidden', 'isSpinning'); // Already removing?
-    diceWrap.classList.add('isIdle');
-}
-
-function diceSpinningBig() {
-    if (!diceWrap) return;
-    diceWrap.classList.remove('hidden', 'isIdle');
-    diceWrap.classList.add('isSpinning');
-    boardWrap.classList.add('isSpinning'); // Add this line
-}
 
 // ---------- helpers ----------
 const screenEl = document.querySelector('.screen');
@@ -610,21 +496,10 @@ function showPopup(data) {
 }
 
 function explodeDice() {
-    if (!diceWrap) return;
-
-    // flash
-    if (screenEl) {
-        screenEl.classList.add('flashBoom');
-        setTimeout(() => screenEl.classList.remove('flashBoom'), 220);
-    }
-
     // confetti burst
     boomBurst();
 
-    // animate diceWrap explode then hide
-    diceWrap.classList.add('explode');
     setTimeout(() => {
-        diceWrap.classList.remove('explode');
         diceHidden();
     }, 560);
 }
@@ -710,10 +585,12 @@ async function spin() {
     startDice3D();
 
     try {
+        spinCancelController = new AbortController();
         const apiPromise = fetchJSON(API.spin, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
+            body: JSON.stringify({}),
+            signal: spinCancelController.signal
         });
 
         // Reset trạng thái
@@ -791,9 +668,13 @@ async function spin() {
         audioWin.currentTime = 0;
         audioWin.play().catch(e => console.log('Audio autoplay blocked:', e));
 
-        stopDice3D();
+        const staggerMs = (res.data.prize && res.data.prize.stagger_duration) ? res.data.prize.stagger_duration : 0;
+        await stopDice3D(res.data.winner.code, staggerMs);
         document.getElementById('specialMsg').classList.add('hidden'); // Hide message
         if (specialMsgTimeout) clearTimeout(specialMsgTimeout); // Clear timeout just in case
+
+        // No more waiting for digital reels to stop completely before showing popup
+
         diceIdleSmall();
         await sleep(180);
         diceHidden();
@@ -991,7 +872,7 @@ async function cancelWinner() {
             const res = await fetchJSON(API.cancel, {
                 method: 'POST',
                 body: JSON.stringify({
-                    participant_id: currentWinner.id, // Or depends on API expectation
+                    id: currentWinner.id,
                     prize_id: currentPrizeId
                 })
             });

@@ -11,7 +11,7 @@ class Prize extends CActiveRecord
     {
         return [
             ['prize_name, prize_order, quantity', 'required'],
-            ['prize_order, quantity, duration', 'numerical', 'integerOnly' => true],
+            ['prize_order, quantity, duration, stagger_duration', 'numerical', 'integerOnly' => true],
             ['prize_name', 'length', 'max' => 255],
         ];
     }

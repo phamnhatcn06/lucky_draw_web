@@ -6,6 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Lucky Draw Show</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/lucky.css" />
 </head>
 
@@ -27,18 +28,15 @@
             <div class="board hidden" id="board">
                 <div id="prizeName" class="prize">—</div>
                 <div class="dice-wrap">
-                    <!-- scale wrapper: nhỏ lúc chờ, to khi quay -->
-                    <div id="diceWrap" class="diceWrap hidden isIdle">
-                        <div class="dice-row">
-                            <div class="scene">
-                                <div class="cube" id="c1"></div>
-                            </div>
-                            <div class="scene">
-                                <div class="cube" id="c2"></div>
-                            </div>
-                            <div class="scene">
-                                <div class="cube" id="c3"></div>
-                            </div>
+                    <div id="reelsWrap" class="reels-wrap hidden">
+                        <div class="reel" id="reel1">
+                            <div class="reel-strip">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</div>
+                        </div>
+                        <div class="reel" id="reel2">
+                            <div class="reel-strip">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</div>
+                        </div>
+                        <div class="reel" id="reel3">
+                            <div class="reel-strip">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9</div>
                         </div>
                     </div>
                 </div>

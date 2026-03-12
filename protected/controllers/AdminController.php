@@ -42,6 +42,17 @@ class AdminController extends Controller
 
     public function actionIndex()
     {
+        // Auto-add column if missing
+        try {
+            Yii::app()->db->createCommand("SELECT stagger_duration FROM prizes LIMIT 1")->queryScalar();
+        } catch (Exception $e) {
+            try {
+                Yii::app()->db->createCommand("ALTER TABLE prizes ADD COLUMN stagger_duration INT DEFAULT 0")->execute();
+            } catch (Exception $e2) {
+                // Ignore if it fails
+            }
+        }
+
         $prizes = Prize::model()->findAll(['order' => 'prize_order ASC']);
         $participantsCount = (int) Yii::app()->db->createCommand("SELECT COUNT(*) FROM participants")->queryScalar();
         $activeCount = (int) Yii::app()->db->createCommand("SELECT COUNT(*) FROM participants")->queryScalar();
@@ -82,27 +93,30 @@ class AdminController extends Controller
             $orders = Yii::app()->request->getPost('prize_order', []);
             $names = Yii::app()->request->getPost('prize_name', []);
             $qtys = Yii::app()->request->getPost('quantity', []);
+            $staggers = Yii::app()->request->getPost('stagger_duration', []);
 
             foreach ($orders as $id => $ord) {
                 $id = (int) $id;
                 $ord = (int) $ord;
                 $name = trim((string) ($names[$id] ?? ''));
                 $qty = (int) ($qtys[$id] ?? 1);
+                $stagger = (int) ($staggers[$id] ?? 0);
 
                 if ($id > 0 && $name !== '' && $ord > 0 && $qty > 0) {
                     Yii::app()->db->createCommand("
-            UPDATE prizes SET prize_order=:o, prize_name=:n, quantity=:q WHERE id=:id
-          ")->execute([':o' => $ord, ':n' => $name, ':q' => $qty, ':id' => $id]);
+                        UPDATE prizes SET prize_order=:o, prize_name=:n, quantity=:q, stagger_duration=:s WHERE id=:id
+                    ")->execute([':o' => $ord, ':n' => $name, ':q' => $qty, ':s' => $stagger, ':id' => $id]);
                 }
             }
 
             $newOrd = (int) Yii::app()->request->getPost('new_prize_order', 0);
             $newName = trim((string) Yii::app()->request->getPost('new_prize_name', ''));
             $newQty = (int) Yii::app()->request->getPost('new_quantity', 0);
+            $newStagger = (int) Yii::app()->request->getPost('new_stagger_duration', 0);
             if ($newOrd > 0 && $newName !== '' && $newQty > 0) {
                 Yii::app()->db->createCommand("
-          INSERT INTO prizes (prize_name, prize_order, quantity) VALUES (:n,:o,:q)
-        ")->execute([':n' => $newName, ':o' => $newOrd, ':q' => $newQty]);
+                    INSERT INTO prizes (prize_name, prize_order, quantity, stagger_duration) VALUES (:n,:o,:q,:s)
+                ")->execute([':n' => $newName, ':o' => $newOrd, ':q' => $newQty, ':s' => $newStagger]);
             }
 
             $tx->commit();

@@ -52,7 +52,8 @@ class ApiController extends Controller
         $row = Yii::app()->db->createCommand("
         SELECT p.*,
                IFNULL(w.c,0) AS awarded,
-               p.duration
+               p.duration,
+               p.stagger_duration
         FROM prizes p
         LEFT JOIN (
             SELECT prize_id, COUNT(*) c
@@ -190,7 +191,7 @@ class ApiController extends Controller
         SELECT value FROM settings WHERE name='current_prize_id'
     ")->queryScalar();
             $prize = Yii::app()->db->createCommand("
-        SELECT p.id, p.prize_name, p.prize_order, p.quantity,p.code,p.duration,
+        SELECT p.id, p.prize_name, p.prize_order, p.quantity,p.code,p.duration, p.stagger_duration,
                IFNULL(w.c,0) AS awarded
         FROM prizes p
         LEFT JOIN (
@@ -236,12 +237,6 @@ class ApiController extends Controller
             $extraWhere = "";
             $queryParams = [];
 
-            if ($prize['code'] == 'first' && $count == 1) {
-                $extraWhere .= " AND p.id = 194 ";
-            } else {
-                $extraWhere .= " AND p.id != 194 ";
-            }
-
             // Check exclude toggle (Active)
             $excludeActive = Yii::app()->db->createCommand("SELECT value FROM settings WHERE name='exclude_active'")->queryScalar();
             if ($excludeActive == 1) {
@@ -285,7 +280,13 @@ class ApiController extends Controller
             $this->json(array(
                 'ok' => true,
                 'data' => array(
-                    'prize' => array('id' => (int) $prize['id'], 'name' => $prize['prize_name'], 'code' => $prize['code'], 'duration' => (int) $prize['duration']),
+                    'prize' => array(
+                        'id' => (int) $prize['id'],
+                        'name' => $prize['prize_name'],
+                        'code' => $prize['code'],
+                        'duration' => (int) $prize['duration'],
+                        'stagger_duration' => (int) $prize['stagger_duration']
+                    ),
                     'winner' => array(
                         'id' => $winner['id'],
                         'code' => $winner['code'],
