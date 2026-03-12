@@ -38,6 +38,22 @@ class ApiController extends Controller
         Yii::app()->end();
     }
 
+    protected function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            // Self-healing: ensure stagger_duration exists
+            try {
+                Yii::app()->db->createCommand("SELECT stagger_duration FROM prizes LIMIT 1")->queryScalar();
+            } catch (Exception $e) {
+                try {
+                    Yii::app()->db->createCommand("ALTER TABLE prizes ADD COLUMN stagger_duration INT DEFAULT 0")->execute();
+                } catch (Exception $e2) {}
+            }
+            return true;
+        }
+        return false;
+    }
+
     public function actionPrize()
     {
         $currentPrizeId = Yii::app()->db->createCommand("
